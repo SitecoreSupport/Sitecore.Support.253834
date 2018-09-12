@@ -49,7 +49,20 @@ namespace Sitecore.Support.Shell.Framework.Commands.System
         {
 
             UrlString preview = Preview.GetPreview();
-            SiteContext site = Factory.GetSite(Settings.Preview.DefaultSite);
+            //fix for 253834. If the current item is null and previewSiteContext has not been resolved, we try to resolve site context by using current host name only
+            SiteContext previewSiteContext = null;
+
+            List<SiteInfo> sites = SiteContextFactory.Sites;
+            foreach (SiteInfo current in sites)
+            {
+                if (current.HostName.ToLowerInvariant().Equals(WebUtil.GetRequestUri().Host.ToLowerInvariant()))
+                {
+                    previewSiteContext = new SiteContext(current);
+                    break;
+                }
+            }
+            
+            SiteContext site = previewSiteContext ?? Factory.GetSite(Settings.Preview.DefaultSite);
             if (site == null || preview == null)
             {
                 SheerResponse.Alert(Translate.Text("Site \"{0}\" not found", new object[]
