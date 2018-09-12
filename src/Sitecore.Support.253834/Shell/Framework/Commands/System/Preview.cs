@@ -49,7 +49,7 @@ namespace Sitecore.Support.Shell.Framework.Commands.System
         {
 
             UrlString preview = Preview.GetPreview();
-            //fix for 253834. If the current item is null and previewSiteContext has not been resolved, we try to resolve site context by using current host name only
+            #region fix for 253834. If the current item is null and previewSiteContext has not been resolved, we try to resolve site context by using current host name only
             SiteContext previewSiteContext = null;
 
             List<SiteInfo> sites = SiteContextFactory.Sites;
@@ -61,8 +61,11 @@ namespace Sitecore.Support.Shell.Framework.Commands.System
                     break;
                 }
             }
-            
+
             SiteContext site = previewSiteContext ?? Factory.GetSite(Settings.Preview.DefaultSite);
+            //SiteContext site = Factory.GetSite(Settings.Preview.DefaultSite);
+            #endregion
+
             if (site == null || preview == null)
             {
                 SheerResponse.Alert(Translate.Text("Site \"{0}\" not found", new object[]
