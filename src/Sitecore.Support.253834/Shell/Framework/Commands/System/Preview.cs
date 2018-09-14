@@ -55,10 +55,14 @@ namespace Sitecore.Support.Shell.Framework.Commands.System
             List<SiteInfo> sites = SiteContextFactory.Sites;
             foreach (SiteInfo current in sites)
             {
-                if (current.HostName.ToLowerInvariant().Equals(WebUtil.GetRequestUri().Host.ToLowerInvariant()))
+                string[] hostnameArray = current.HostName.ToLowerInvariant().Split('|');
+                foreach (string hostname in hostnameArray)
                 {
-                    previewSiteContext = new SiteContext(current);
-                    break;
+                    if (hostname.Trim().Equals(WebUtil.GetRequestUri().Host.ToLowerInvariant()))
+                    {
+                        previewSiteContext = new SiteContext(current);
+                        break;
+                    }
                 }
             }
 
